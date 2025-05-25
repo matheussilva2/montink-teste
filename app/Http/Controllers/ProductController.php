@@ -14,7 +14,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::orderBy('id', 'desc')->paginate(10);
+        $products = Product::whereNull('id_product_variation')->orderBy('id', 'desc')->paginate(10);
         
         return response()->json($products);
     }
@@ -60,23 +60,44 @@ class ProductController extends Controller
         $product = Product::find($id);
         if(!$product) return response()->json(["message" => "Produto não encontrado!"], 404);
 
+        $product->variations = $product->variations();
+        $stock = $product->stock();
+        $product->stock = $stock->amount;
+
+        foreach($product->variations as $variation) {
+            $variation->stock = $variation->stock()->amount;
+        }
+
         return response()->json($product);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ProductRequest $request, string $id)
     {
         $product = Product::find($id);
         
         $product->update([
             "name" => $request->name,
-            "price" => $request->price,
-            "variation" => $request->variation ?: ""
+            "price" => $request->price
         ]);
 
         $product->stock()->update(['amount' => $request->stock]);
+
+        foreach($request->validated()['variations'] as $item) {
+            $variation = Product::find($item['id']);
+            if(!$variation) continue;
+
+            $variation->update([
+                "name" => $item["name"],
+                "price" => $item["price"],
+            ]);
+
+            $variation->stock()->update([
+                "amount" => $item["stock"]
+            ]);
+        }
 
         return response()->json($product);
     }
