@@ -14,7 +14,7 @@ const ProductCard = ({product, selectProduct}: PropsType) => {
         <p>R$ {product.price}</p>
       </div>
       <div className="card-footer d-flex justify-content-between">
-        <button className="btn btn-success">Comprar</button>
+        <button className="btn btn-success">+ Carrinho</button>
         <button className="btn btn-warning" onClick={() => selectProduct(product)}>Editar</button>
       </div>
     </div>
