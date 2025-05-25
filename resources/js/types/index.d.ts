@@ -3,12 +3,15 @@ import type { Config } from 'ziggy-js';
 
 export interface IProduct {
     id?: string | number;
-    name: string,
-    price: string | number,
-    stock: string | number,
-    variations: IVariation[]
+    name: string;
+    price: string | number;
+    stock: string | number;
+    variations: IVariation[];
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface IVariation extends IBaseProduct{
-    local_id: string | number
+    local_id?: string | number;
+    id?: string | number;
 }
