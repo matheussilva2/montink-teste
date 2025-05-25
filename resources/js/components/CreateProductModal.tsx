@@ -9,7 +9,7 @@ const emptyProduct:IProduct = {
     variations: []
 };
 
-const CreateProductModal = forwardRef<HTMLDivElement> (({fetchProducts}: any, ref) => {
+const CreateProductModal = forwardRef<HTMLDivElement, {fetchProducts: () => Promise<void>}> (({fetchProducts}: any, ref) => {
     const [product, setProduct] = useState<IProduct>(emptyProduct);
     const [error, setError] = useState<string | null | undefined>(null);
 
