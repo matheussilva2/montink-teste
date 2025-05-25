@@ -27,15 +27,29 @@ class ProductController extends Controller
         $product = Product::create([
             "name" => $request->name,
             "price" => $request->price,
-            "id_product_variation" => $request->variation === "none" ? null : $request->variation
         ]);
 
         Stock::create([
             "amount" => $request->stock,
             "product_id" => $product->id
         ]);
+        
+        if(array_key_exists("variations", $request->validated())){
+            foreach($request->validated()["variations"] as $variation) {
+                $product_variation = Product::create([
+                    "name" => $variation["name"],
+                    "price" => $variation["price"],
+                    "id_product_variation" => $product->id
+                ]);
 
-        return redirect("products");
+                Stock::create([
+                    "amount" => $variation["stock"],
+                    "product_id" => $product_variation->id
+                ]);
+            }
+        }
+
+        return response()->json($product);
     }
 
     /**
