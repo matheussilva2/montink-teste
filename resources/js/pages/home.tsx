@@ -1,12 +1,12 @@
+import CartModal from "@/components/CartModal";
 import CreateProductModal from "@/components/CreateProductModal";
 import EditProductModal from "@/components/EditProductModal";
 import ProductCard from "@/components/ProductCard";
 import { api } from "@/services/api";
 import { IProduct } from "@/types";
-import { product } from "@/utils";
 import React, { useEffect, useRef, useState } from "react";
 
-export default function Welcome() {
+export default function Home() {
     const emptyProduct:IProduct = {
         name: '',
         price: 0,
@@ -20,6 +20,7 @@ export default function Welcome() {
     
     const createProductModalRef = useRef<HTMLDivElement>(null);
     const editProductModalRef = useRef<HTMLDivElement>(null);
+    const cartModalRef = useRef<HTMLDivElement>(null);
 
     function selectProduct(data:IProduct) {
         setSelectedProduct(data);
@@ -68,7 +69,8 @@ export default function Welcome() {
             <span className='text-light h3'>Teste Montink</span>
         </header>
         <main className="container">
-            <div className="d-flex mt-3 open-modal">
+            <div className="d-flex mt-3" style={{gap: 3}}>
+                <button className="btn btn-primary" onClick={() => openModal(cartModalRef)}>Carrinho</button>
                 <button className="btn btn-primary" onClick={() => openModal(createProductModalRef)}>Novo Produto</button>
             </div>
 
@@ -90,6 +92,7 @@ export default function Welcome() {
 
         <CreateProductModal fetchProducts={fetchProducts} ref={createProductModalRef} />
         <EditProductModal product={selectedProduct} fetchProducts={fetchProducts} ref={editProductModalRef} />
+        <CartModal ref={cartModalRef} />
         </>
     );
 }
