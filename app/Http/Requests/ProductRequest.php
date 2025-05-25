@@ -30,7 +30,8 @@ class ProductRequest extends FormRequest
             'stock' => ['required'],
             'variations.*.name' => ["required", "string"],
             "variations.*.price" => ["required", "numeric"],
-            "variations.*.stock" => ["required", "numeric"]
+            "variations.*.stock" => ["required", "numeric"],
+            "variations.*.id" => ["nullable", "numeric"]
         ];
     }
 
