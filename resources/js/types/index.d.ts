@@ -11,7 +11,7 @@ export interface IProduct {
     updated_at?: string;
 }
 
-export interface IVariation extends IBaseProduct{
+export interface IVariation extends IProduct{
     local_id?: string | number;
     id?: string | number;
 }
