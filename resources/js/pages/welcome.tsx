@@ -1,5 +1,6 @@
 import CreateProductModal from "@/components/CreateProductModal";
 import ProductCard from "@/components/ProductCard";
+import { IProduct } from "@/types";
 import { product } from "@/utils";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -7,7 +8,7 @@ export default function Welcome() {
     const [products, setProducts] = useState([]);
     const [page, setPage] = useState<{current_page: number, last_page: number}>({current_page: 1, last_page: 1});
     
-    const createProductModalRef = useRef<HTMLInputElement>(null);
+    const createProductModalRef = useRef<HTMLDivElement>(null);
 
     async function fetchProducts() {
         const products = await product.index();
@@ -18,7 +19,7 @@ export default function Welcome() {
         });
     }
 
-    function openModal(modalRef:React.RefObject<HTMLInputElement|null>) {
+    function openModal(modalRef:React.RefObject<HTMLDivElement|null>) {
         if(!modalRef.current) return;
         
         const modal = new bootstrap.Modal(modalRef.current);
@@ -42,14 +43,14 @@ export default function Welcome() {
 
             <div className="mt-3 d-flex flex-wrap justify-content-center" style={{gap: 10}}>
             {
-                products.map((item) => (
+                products.map((item:IProduct) => (
                     <ProductCard key={item.id} product={item} />
                 ))
             }
             </div>
         </main>
 
-        <CreateProductModal ref={createProductModalRef} />
+        <CreateProductModal fetchProducts={fetchProducts} ref={createProductModalRef} />
         </>
     );
 }
