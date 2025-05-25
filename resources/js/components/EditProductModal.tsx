@@ -3,7 +3,7 @@ import { IProduct, IVariation } from "@/types";
 import { forwardRef, useEffect, useState } from "react"
 
 type propsType = {
-    fetchProducts: () => Promise<void>,
+    fetchProducts: () => void,
     product: IProduct
 }
 
