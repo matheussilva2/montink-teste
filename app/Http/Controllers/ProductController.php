@@ -15,6 +15,10 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::whereNull('id_product_variation')->orderBy('id', 'desc')->paginate(10);
+
+        foreach($products as $product) {
+            $product->variations = $product->variations();
+        }
         
         return response()->json($products);
     }
