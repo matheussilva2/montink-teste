@@ -1,21 +1,52 @@
 import CreateProductModal from "@/components/CreateProductModal";
+import EditProductModal from "@/components/EditProductModal";
 import ProductCard from "@/components/ProductCard";
+import { api } from "@/services/api";
 import { IProduct } from "@/types";
 import { product } from "@/utils";
 import React, { useEffect, useRef, useState } from "react";
 
 export default function Welcome() {
-    const [products, setProducts] = useState([]);
+    const emptyProduct:IProduct = {
+        name: '',
+        price: 0,
+        stock: 0,
+        variations: []
+    };
+
+    const [products, setProducts] = useState<IProduct[]>([]);
     const [page, setPage] = useState<{current_page: number, last_page: number}>({current_page: 1, last_page: 1});
+    const [selectedProduct, setSelectedProduct] = useState<IProduct>(emptyProduct);
     
     const createProductModalRef = useRef<HTMLDivElement>(null);
+    const editProductModalRef = useRef<HTMLDivElement>(null);
 
-    async function fetchProducts() {
-        const products = await product.index();
-        setProducts(products.data.data);
-        setPage({
-            current_page: products.data.current_page,
-            last_page: products.data.last_page
+    function selectProduct(data:IProduct) {
+        setSelectedProduct(data);
+        openModal(editProductModalRef);
+    }
+
+    function fetchMoreProducts() {
+        if(page.current_page >= page.last_page) return;
+        
+        api.get(`products?page=${page.current_page + 1}`)
+        .then((response) => {
+            setProducts([...products, ...response.data.data]);
+            setPage({
+                current_page: response.data.current_page,
+                last_page: response.data.last_page
+            });
+        });
+    }
+
+    function fetchProducts() {
+        api.get(`products`)
+        .then((response) => {
+            setProducts([...response.data.data]);
+            setPage({
+                current_page: response.data.current_page,
+                last_page: response.data.last_page
+            });
         });
     }
 
@@ -41,16 +72,24 @@ export default function Welcome() {
                 <button className="btn btn-primary" onClick={() => openModal(createProductModalRef)}>Novo Produto</button>
             </div>
 
-            <div className="mt-3 d-flex flex-wrap justify-content-center" style={{gap: 10}}>
+            <div className="my-3 d-flex flex-wrap justify-content-center" style={{gap: 10}}>
             {
                 products.map((item:IProduct) => (
-                    <ProductCard key={item.id} product={item} />
+                    <ProductCard selectProduct={selectProduct} key={item.id} product={item} />
                 ))
             }
             </div>
+            {
+                page.current_page < page.last_page && (
+                    <div className="mb-3">
+                        <button className="btn d-block mx-auto mt-3 text-primary border-1" onClick={fetchMoreProducts}>Carregar Mais</button>
+                    </div>
+               )
+            }
         </main>
 
         <CreateProductModal fetchProducts={fetchProducts} ref={createProductModalRef} />
+        <EditProductModal product={selectedProduct} fetchProducts={fetchProducts} ref={editProductModalRef} />
         </>
     );
 }
