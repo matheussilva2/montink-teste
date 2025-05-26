@@ -38,8 +38,10 @@ php artisan key:generate && php artisan migrate --seed
 ```
 7. Inicie o servidor
 ```sh
-php artisan serve
+composer run dev
 ```
+
+8. Acesse http://localhost:8000
 
 ## Modelagem do Banco de Dados
 
