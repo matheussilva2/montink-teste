@@ -18,6 +18,10 @@ class ProductController extends Controller
 
         foreach($products as $product) {
             $product->variations = $product->variations();
+            $product->stock = $product->stock()->amount;
+            foreach($product->variations as $variation) {
+                $variation->stock = $variation->stock()->amount;
+            }
         }
         
         return response()->json($products);
