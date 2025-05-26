@@ -24,14 +24,30 @@ class OrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email'],
-            'status' => ['required', new Enum(OrderStatusEnum::class)],
-            'coupon_id' => ['required'],
-            'product_id' => ['required'],
-            'postal_code' => ['required'],
-            'address' => ['required'],
-            'state' => ['required'],
-            'city' => ['required']        
+            'cart' => 'required|array|min:1',
+            'cart.*.id' => 'required|integer',
+            'cart.*.name' => 'required|string',
+            'cart.*.price' => 'required|numeric|min:0',
+            'cart.*.quantity' => 'required|integer|min:1',
+
+            'payment' => 'required|array',
+            'payment.total' => 'required|numeric|min:0',
+            'payment.shipping' => 'required|numeric|min:0',
+            'payment.discount' => 'required|numeric|min:0',
+            'payment.subtotal' => 'required|numeric|min:0',
+            'payment.email' => 'required|email',
+
+            'payment.coupon' => 'nullable|array',
+            'payment.coupon.id' => 'nullable|integer',
+            'payment.coupon.code' => 'nullable|string',
+            'payment.coupon.discount' => 'nullable|numeric',
+            'payment.coupon.expires_at' => 'nullable|date',
+
+            'payment.shipping_data' => 'required|array',
+            'payment.shipping_data.postal_code' => 'required|string',
+            'payment.shipping_data.address' => 'required|string',
+            'payment.shipping_data.city' => 'required|string',
+            'payment.shipping_data.state' => 'required|string'
         ];
     }
 }
