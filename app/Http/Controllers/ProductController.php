@@ -90,17 +90,28 @@ class ProductController extends Controller
         $product->stock()->update(['amount' => $request->stock]);
         if(array_key_exists("variations", $request->validated())){
             foreach($request->validated()['variations'] as $item) {
-                $variation = Product::find($item['id']);
-                if(!$variation) continue;
+                if(array_key_exists("id", $item)) {
+                    $variation = Product::find($item['id']);
+                    if(!$variation) continue;
+                    $variation->update([
+                        "name" => $item["name"],
+                        "price" => $item["price"],
+                    ]);
+                    $variation->stock()->update([
+                        "amount" => $item["stock"]
+                    ]);
+                } else {
+                    $variation = Product::create([
+                        "id_product_variation" => $product->id,
+                        "name" => $item["name"],
+                        "price" => $item["price"]
+                    ]);
 
-                $variation->update([
-                    "name" => $item["name"],
-                    "price" => $item["price"],
-                ]);
-
-                $variation->stock()->update([
-                    "amount" => $item["stock"]
-                ]);
+                    Stock::create([
+                        "product_id" => $variation->id,
+                        "amount" => $item["stock"]
+                    ]);
+                }
             }
         }
 
