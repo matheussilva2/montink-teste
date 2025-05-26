@@ -34,8 +34,7 @@ composer install && npm install
 5. No arquivo .env, configure o banco de dados (DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD)
 6. Configure o Laravel e crie o banco de dados populado
 ```sh
-php artisan key:generate &&
-php artisan migrate --seed
+php artisan key:generate && php artisan migrate --seed
 ```
 7. Inicie o servidor
 ```sh
