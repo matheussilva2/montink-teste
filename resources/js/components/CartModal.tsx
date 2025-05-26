@@ -19,7 +19,11 @@ type PaymentValuesType = {
     }
 }
 
-const CartModal = forwardRef<HTMLDivElement> ((props, ref) => {
+type propsType = {
+    fetchProducts: () => void
+}
+
+const CartModal = forwardRef<HTMLDivElement, propsType> (({fetchProducts}, ref) => {
     const [ coupons, setCoupons ] = useState<ICoupon[]>([]);
     const { cart, dispatch } = useCart();
     const [step, setStep] = useState<number>(1);
@@ -161,7 +165,7 @@ const CartModal = forwardRef<HTMLDivElement> ((props, ref) => {
                 }
                 {
                     cart.items.map((item:CartItem) => (
-                        <>
+                        <div key={item.id}>
                             <div key={item.id} className="d-flex justify-content-between">
                                 <div className="d-flex align-items-center">
                                     <span className="fw-bold">{item.name}</span>
@@ -179,7 +183,7 @@ const CartModal = forwardRef<HTMLDivElement> ((props, ref) => {
                                 </div>
                             </div>
                             <hr />        
-                        </>
+                        </div>
                     ))
                 }
                 <div className="d-flex justify-content-between align-items-center">
@@ -236,6 +240,7 @@ const CartModal = forwardRef<HTMLDivElement> ((props, ref) => {
                     }
                 });
                 dispatch({ type: "CLEAR_CART" });
+                fetchProducts();
             })
             .catch(error => {
                 console.error("Erro ao fazer pedido:", error.response.data.message);
