@@ -94,28 +94,34 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(OrderRequest $request, string $id)
+    public function webhook(Request $request)
     {
-        $order = Order::find($id);
+        $order = Order::find($request->id);
         if(!$order) return response()->json(["message" => "Pedido não encontrado"], 404);
 
-        $product = Product::find($request->product_id);
-        
-        $order_data = [
-            "email" => $request->email,
-            "status" => $request->status,
-            "address" => "{$request->address}",
-            "city" => $request->city,
-            "state" => $request->state,
-            "postal_code" => $request->postal_code,
-            "coupon_id" => $request->coupon_id,
-            "product_id" => $request->product_id,
-            "value" => $product->price
+        if(!OrderStatusEnum::tryFrom($request->status)) {
+            return response()->json(["message" => "Status '{$request->status}' inválido!"]);
+        }
+
+        $data = [
+            "status" => $request->status
         ];
 
-        $order->update($order_data);
+        if($request->status === OrderStatusEnum::Paid->value) {
+            $data["paid_at"] = Carbon::now();
+        } else if($request->status === OrderStatusEnum::Cancelled->value) {
+            $order->products()->delete();
+            $order->delete();
+        }
 
-        return response()->json($order);
+        $order->update($data);
+
+        return response()->json($request->status === OrderStatusEnum::Cancelled->value ? [
+            "message" => "Pedido excluído."
+        ] : [
+            "message" => "Pedido atualizado",
+            "order" => $order
+        ]);
     }
 
     /**
