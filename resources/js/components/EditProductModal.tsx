@@ -34,7 +34,7 @@ const EditProductModal = forwardRef<HTMLDivElement, propsType> (({fetchProducts,
             });
 
             data.variations = variations;
-
+            
             setProductData(response.data);
         });
     }
@@ -62,7 +62,7 @@ const EditProductModal = forwardRef<HTMLDivElement, propsType> (({fetchProducts,
         const updated_product:IProduct = {
             ...productData,
             variations: productData.variations.map(variation =>
-                variation.local_id === local_id
+                variation && variation.local_id === local_id
                     ? { ...variation, [name]: value }
                     : variation
             )
@@ -72,9 +72,7 @@ const EditProductModal = forwardRef<HTMLDivElement, propsType> (({fetchProducts,
 
     function addVariation() {
         const data = {
-            name: productData.name,
-            price: productData.price,
-            stock: productData.stock,
+            ...productData,
             variations: [...productData.variations, {
                 local_id: productData.variations.length,
                 name: "",
@@ -94,6 +92,8 @@ const EditProductModal = forwardRef<HTMLDivElement, propsType> (({fetchProducts,
         api.put(`products/${productData.id}`, formData)
         .then((response) => {
             fetchProducts();
+            alert("Produto atualizado com sucesso!");
+            setProductData(emptyProduct);
         })
         .catch((error) => {
             handleRequestError(error.response.data.message);
@@ -159,7 +159,7 @@ const EditProductModal = forwardRef<HTMLDivElement, propsType> (({fetchProducts,
                                 <span className="variation d-block h5">Variações</span>
                                 
                                 {
-                                    productData.variations.map((variation: IVariation, index:number) => (
+                                    productData.variations.map((variation: IVariation, index:number) => variation && (
                                         variation.local_id !== undefined ? (
                                     <fieldset key={variation.local_id} className="mb-2">
                                         <legend className="h6">Variação {variation.local_id}</legend>
