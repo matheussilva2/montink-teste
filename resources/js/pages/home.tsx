@@ -92,7 +92,7 @@ export default function Home() {
 
         <CreateProductModal fetchProducts={fetchProducts} ref={createProductModalRef} />
         <EditProductModal product={selectedProduct} fetchProducts={fetchProducts} ref={editProductModalRef} />
-        <CartModal ref={cartModalRef} />
+        <CartModal fetchProducts={fetchProducts} ref={cartModalRef} />
         </>
     );
 }
