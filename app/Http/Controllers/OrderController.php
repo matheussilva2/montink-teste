@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatusEnum;
 use App\Http\Requests\OrderRequest;
+use App\Mail\OrderConfirmation;
 use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -63,6 +65,7 @@ class OrderController extends Controller
                 "amount" => $stock->amount - $product["quantity"]
             ]);
         }
+        Mail::to($data["payment"]["email"])->send(new OrderConfirmation($data));
 
         return response()->json(["message" => "Pedido criado!"]);
     }
