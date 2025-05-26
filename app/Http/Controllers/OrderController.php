@@ -153,7 +153,7 @@ class OrderController extends Controller
             $orderData["payment"]["subtotal"] += $product->price;
         }
 
-        if($data["payment"]["coupon"]) {
+        if(isset($data["payment"]["coupon"])) {
             $orderData["payment"]["coupon"] = Coupon::find($data["payment"]["coupon"]["id"]);
             $orderData["payment"]["discount"] = $orderData["payment"]["subtotal"] * ($orderData["payment"]["coupon"]->discount / 100);
         }
