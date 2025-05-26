@@ -57,6 +57,13 @@ class OrderController extends Controller
 
         $order->products()->createMany($order_products);
 
+        foreach($data["cart"] as $product) {
+            $stock = $product["product"]->stock();
+            $stock->update([
+                "amount" => $stock->amount - $product["quantity"]
+            ]);
+        }
+
         return response()->json(["message" => "Pedido criado!"]);
     }
 
