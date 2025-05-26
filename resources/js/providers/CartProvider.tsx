@@ -16,7 +16,7 @@ interface CartState {
 }
 
 interface CartAction {
-    type: "ADD_ITEM" | "REMOVE_ITEM" | "UPDATE_QUANTITY";
+    type: "ADD_ITEM" | "REMOVE_ITEM" | "UPDATE_QUANTITY" | "CLEAR_CART";
     payload: CartItem;
 }
 
@@ -44,6 +44,11 @@ function cartReducer(state: CartState, action: CartAction) : CartState {
             return {
                 ...state,
                 items: state.items.map(item => item.id === action.payload.id ? { ...item, quantity: action.payload.quantity } : item)
+            }
+        case "CLEAR_CART":
+            return {
+                ...state,
+                items: []
             }
         default:
             return state;
