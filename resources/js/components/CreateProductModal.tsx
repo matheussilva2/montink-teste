@@ -58,10 +58,10 @@ const CreateProductModal = forwardRef<HTMLDivElement, {fetchProducts: () => void
     
     function onSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        console.log(product);
 
         api.post("products", product)
         .then((response) => {
+            alert("Produto criado com sucesso!");
             setProduct(emptyProduct);
             fetchProducts();
         })
