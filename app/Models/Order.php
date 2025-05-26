@@ -9,10 +9,10 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['value', 'status', 'address', 'postal_code', 'paid_at', 'coupon_id', 'product_id', 'email', 'city', 'state'];
+    protected $fillable = ['subtotal', 'shipping', 'discount', 'total', 'status', 'address', 'postal_code', 'paid_at', 'coupon_id', 'product_id', 'email', 'city', 'state'];
 
-    public function product() {
-        return $this->belongsTo(Product::class)->first();
+    public function products() {
+        return $this->hasMany(OrderProduct::class, 'order_id');
     }
 
     public function coupon() {

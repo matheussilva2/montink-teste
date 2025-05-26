@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->decimal("value", 8, 2);
+            $table->decimal("subtotal", 8, 2);
+            $table->decimal("shipping", 8, 2);
+            $table->decimal("discount", 8, 2);
+            $table->decimal("total", 8, 2);
             $table->string("email");
             $table->enum("status", ["pending", "paid", "cancelled", "refunded"]);
             $table->string("address");
@@ -22,7 +25,6 @@ return new class extends Migration
             $table->string("postal_code");
             $table->timestamp("paid_at")->nullable();
             $table->foreignId("coupon_id")->nullable()->constrained("coupons");
-            $table->foreignId("product_id")->constrained("products");
             $table->timestamps();
         });
     }
