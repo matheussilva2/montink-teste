@@ -219,8 +219,23 @@ const CartModal = forwardRef<HTMLDivElement> ((props, ref) => {
         } else {
             api.post('orders', {cart: cart.items, payment: paymentValues})
             .then((response) => {
-                console.log("Pedido realizado com sucesso:", response.data);
-                
+                alert("Pedido realizado com sucesso:");
+                setStep(1);
+                setPaymentValues({
+                    total: 0,
+                    shipping: 0,
+                    discount: 0,
+                    coupon: undefined,
+                    subtotal: 0,
+                    email: '',
+                    shipping_data: {
+                        postal_code: '',
+                        address: '',
+                        city: '',
+                        state: ''
+                    }
+                });
+                dispatch({ type: "CLEAR_CART" });
             })
             .catch(error => {
                 console.error("Erro ao fazer pedido:", error.response.data.message);
