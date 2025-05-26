@@ -1,10 +1,14 @@
 import { createContext, useReducer, useContext, ReactNode } from 'react';
 
-interface CartItem {
+export interface CartItem {
     id: number;
     name: string;
     price: number;
     quantity: number;
+    variation: {
+        id: number;
+        name: string;
+    }
 }
 
 interface CartState {
@@ -23,7 +27,13 @@ function cartReducer(state: CartState, action: CartAction) : CartState {
         case "ADD_ITEM":
             return {
                 ...state,
-                items: [...state.items, action.payload]
+                items: state.items.some(item => item.id === action.payload.id)
+                    ? state.items.map(item =>
+                        item.id === action.payload.id
+                            ? { ...item, quantity: item.quantity + 1 }
+                            : item
+                    )
+                    : [...state.items, { ...action.payload, quantity: 1 }]
             };
         case "REMOVE_ITEM":
             return {
