@@ -15,7 +15,7 @@
 | PHP | 8.4.5 |
 | Composer | 2.8.6 |
 | Laravel | ^12.0 |
-| React | ^19.0.0 |
+| React + Typescript | ^19.0.0 |
 | MySQL | 8.0 |
 | Bootstrap | 5.3.6 |
 
