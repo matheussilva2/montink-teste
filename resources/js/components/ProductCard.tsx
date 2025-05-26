@@ -12,6 +12,9 @@ const ProductCard = ({product, selectProduct}: PropsType) => {
   const [selectedVariation, setSelectedVariation] = useState<IVariation | null>(null);
 
   function addToCart() {
+    if(selectedVariation && Number(selectedVariation.stock) <= 0)  return;
+    if(Number(product.stock) <= 0 && !selectedVariation) return;
+
     if(product.variations.length > 0 && selectedVariation) {
       dispatch({ type: "ADD_ITEM", payload: {
         id: selectedVariation.id,
@@ -48,6 +51,7 @@ const ProductCard = ({product, selectProduct}: PropsType) => {
       <div className="card-body">
         <p className="h5 card-title">{product.name}</p>
         <p>R$ {product.price}</p>
+        <p>Estoque: {`${selectedVariation ? selectedVariation.stock + ' unidades (variação)' : product.stock + ' unidades'}`}</p>
         <label htmlFor={`product_${product.id}_variations`}>Variação: </label>
         <select onInput={handleVariationChange} id={`product_${product.id}_variations`}>
           <option selected={selectedVariation === null} value="none">Sem variação</option>
@@ -59,7 +63,22 @@ const ProductCard = ({product, selectProduct}: PropsType) => {
         </select>
       </div>
       <div className="card-footer d-flex justify-content-between">
-        <button className="btn btn-success" onClick={addToCart}>+ Carrinho</button>
+        {
+          selectedVariation ? (
+            <button
+            className={`btn ${(selectedVariation && Number(selectedVariation.stock) > 0)? 'btn-success':'btn-disabled'}`} 
+            onClick={addToCart}>
+              {Number(selectedVariation.stock) > 0 ? '+ Carrinho' : 'Sem estoque'}
+          </button>
+          ) :
+          (
+            <button
+            className={`btn ${(Number(product.stock) > 0)? 'btn-success':'btn-disabled'}`} 
+            onClick={addToCart}>
+              {Number(product.stock) > 0 ? '+ Carrinho' : 'Sem estoque'}
+          </button>
+          )
+        }
         <button className="btn btn-warning" onClick={() => selectProduct(product)}>Editar</button>
       </div>
     </div>
